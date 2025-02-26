@@ -35,6 +35,34 @@ function hideLoading() {
 
 // ======================= Fetch Videos =======================
 
+// Function to Fetch Ramadan Videos from YouTube
+async function fetchRamadanVideos() {
+    try {
+        const response = await fetch(
+            `https://www.googleapis.com/youtube/v3/search?part=snippet&q=Ramadan%20Islamic%20Quran%20Lectures&type=video&maxResults=10&key=${API_KEY}`
+        );
+        const data = await response.json();
+
+        const ramadanVideosContainer = document.getElementById("ramadan-videos");
+        if (!ramadanVideosContainer) return;
+        
+        ramadanVideosContainer.innerHTML = ""; // Clear previous videos
+
+        data.items.forEach((video) => {
+            const snippet = video.snippet;
+            const videoId = video.id.videoId;
+            addVideoCard(snippet, videoId, ramadanVideosContainer);
+        });
+
+    } catch (error) {
+        console.error("Error fetching Ramadan videos:", error);
+    }
+}
+
+// Call the function on page load
+document.addEventListener("DOMContentLoaded", () => {
+    fetchRamadanVideos();
+});
 // Fetch Trending Videos
 async function fetchTrendingVideos() {
   try {
