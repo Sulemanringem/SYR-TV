@@ -38,15 +38,31 @@ function hideLoading() {
 // Function to Fetch Ramadan Videos from YouTube
 async function fetchRamadanVideos() {
     try {
+        console.log("Fetching Ramadan Videos..."); // Debugging log
+
         const response = await fetch(
             `https://www.googleapis.com/youtube/v3/search?part=snippet&q=Ramadan%20Islamic%20Quran%20Lectures&type=video&maxResults=10&key=${API_KEY}`
         );
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
         const data = await response.json();
+        console.log("Ramadan API Response:", data); // Debugging log
 
         const ramadanVideosContainer = document.getElementById("ramadan-videos");
-        if (!ramadanVideosContainer) return;
-        
+        if (!ramadanVideosContainer) {
+            console.error("Ramadan video container not found!");
+            return;
+        }
+
         ramadanVideosContainer.innerHTML = ""; // Clear previous videos
+
+        if (!data.items || data.items.length === 0) {
+            ramadanVideosContainer.innerHTML = "<p>No Ramadan videos found.</p>";
+            return;
+        }
 
         data.items.forEach((video) => {
             const snippet = video.snippet;
@@ -58,8 +74,6 @@ async function fetchRamadanVideos() {
         console.error("Error fetching Ramadan videos:", error);
     }
 }
-
-// Call the function on page load
 document.addEventListener("DOMContentLoaded", () => {
     fetchRamadanVideos();
 });
@@ -126,31 +140,29 @@ async function fetchYouTubeVideos(query = "", pageToken = "") {
 }
 
 // Add Video Card to DOM
-function addVideoCard(snippet, videoId) {
-  const videoCard = document.createElement("div");
-  videoCard.classList.add("video-card");
+function addVideoCard(snippet, videoId, container) {
+    const videoCard = document.createElement("div");
+    videoCard.classList.add("video-card");
 
-  videoCard.innerHTML = `
-    <div class="thumbnail-container" data-video-id="${videoId}">
-      <img src="${snippet.thumbnails.high.url}" alt="${snippet.title}" class="thumbnail">
-      <div class="play-icon">
-        <i class="uil uil-play-circle"></i>
-      </div>
-    </div>
-    <div class="video-details">
-      <h2 class="title">${snippet.title}</h2>
-      <p class="channel-name">${snippet.channelTitle}</p>
-      <p class="views">Published on: ${new Date(snippet.publishedAt).toDateString()}</p>
-    </div>
-  `;
+    videoCard.innerHTML = `
+        <div class="thumbnail-container" data-video-id="${videoId}">
+            <img src="${snippet.thumbnails.high.url}" alt="${snippet.title}" class="thumbnail">
+            <div class="play-icon">
+                <i class="uil uil-play-circle"></i>
+            </div>
+        </div>
+        <div class="video-details">
+            <h2 class="title">${snippet.title}</h2>
+            <p class="channel-name">${snippet.channelTitle}</p>
+        </div>
+    `;
 
-  videoList.appendChild(videoCard);
+    videoCard.addEventListener("click", () => {
+        loadVideo(videoId);
+    });
+
+    container.appendChild(videoCard);
 }
-self.addEventListener("fetch", (event) => {
-  if (event.request.url.startsWith("https://suspicious-site.com")) {
-    return fetch(event.request).catch(() => console.warn("Blocked suspicious request."));
-  }
-});
 
 // ======================= Event Listeners =======================
 
