@@ -75,7 +75,8 @@ async function fetchRamadanVideos() {
     }
 }
 document.addEventListener("DOMContentLoaded", () => {
-    fetchRamadanVideos();
+    fetchTrendingVideos(); // Fetch regular trending videos
+    fetchRamadanVideos();  // Fetch Ramadan Special videos
 });
 // Fetch Trending Videos
 async function fetchTrendingVideos() {
@@ -140,7 +141,7 @@ async function fetchYouTubeVideos(query = "", pageToken = "") {
 }
 
 // Add Video Card to DOM
-function addVideoCard(snippet, videoId, container) {
+function addVideoCard(snippet, videoId, container = videoList) {
     const videoCard = document.createElement("div");
     videoCard.classList.add("video-card");
 
@@ -163,7 +164,6 @@ function addVideoCard(snippet, videoId, container) {
 
     container.appendChild(videoCard);
 }
-
 // ======================= Event Listeners =======================
 
 // Function to load and play video
