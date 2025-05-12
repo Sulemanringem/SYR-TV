@@ -35,49 +35,6 @@ function hideLoading() {
 
 // ======================= Fetch Videos =======================
 
-// Function to Fetch Ramadan Videos from YouTube
-async function fetchRamadanVideos() {
-    try {
-        console.log("Fetching Ramadan Videos..."); // Debugging log
-
-        const response = await fetch(
-            `https://www.googleapis.com/youtube/v3/search?part=snippet&q=Ramadan%20Islamic%20Quran%20Lectures&type=video&maxResults=10&key=${API_KEY}`
-        );
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log("Ramadan API Response:", data); // Debugging log
-
-        const ramadanVideosContainer = document.getElementById("ramadan-videos");
-        if (!ramadanVideosContainer) {
-            console.error("Ramadan video container not found!");
-            return;
-        }
-
-        ramadanVideosContainer.innerHTML = ""; // Clear previous videos
-
-        if (!data.items || data.items.length === 0) {
-            ramadanVideosContainer.innerHTML = "<p>No Ramadan videos found.</p>";
-            return;
-        }
-
-        data.items.forEach((video) => {
-            const snippet = video.snippet;
-            const videoId = video.id.videoId;
-            addVideoCard(snippet, videoId, ramadanVideosContainer);
-        });
-
-    } catch (error) {
-        console.error("Error fetching Ramadan videos:", error);
-    }
-}
-document.addEventListener("DOMContentLoaded", () => {
-    fetchTrendingVideos(); // Fetch regular trending videos
-    fetchRamadanVideos();  // Fetch Ramadan Special videos
-});
 // Fetch Trending Videos
 async function fetchTrendingVideos() {
   try {
